@@ -1,4 +1,4 @@
-name: Sync Figma variables to tokens
+name: Sync Figma variables to tokens (and code)
 on:
   workflow_dispatch:
     inputs:
@@ -14,6 +14,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.SERVER_ENV_PROD }}" > .env
+          cat .env
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
@@ -28,11 +36,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Install Style Dictionary
-      #   run: npm install -g style-dictionary
+      - name: Install Style Dictionary
+        run: npm install -g style-dictionary
 
-      # - name: Clear tokens directory for demo
-      #   run: bash cleanup.sh
+      - name: Clear tokens directory for demo
+        run: bash cleanup.sh
 
       - name: Sync variables in Figma file to tokens
         run: npm run sync-figma-to-tokens -- --output tokens
@@ -40,11 +48,11 @@ jobs:
           FILE_KEY: ${{ github.event.inputs.file_key }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_ACTION_VARIABLES_SYNC_FIGMA_TOKEN }}
 
-      # - name: Remove dollar signs from output (SD won't work otherwise)
-      #   run: bash removedollarsigns.sh
+      - name: Remove dollar signs from output (SD won't work otherwise)
+        run: bash removedollarsigns.sh
   
-      # - name: Build Style Dictionary (uses config.json to define src/dest)
-      #   run: npm run build
+      - name: Build Style Dictionary (uses config.json to define src/dest)
+        run: npm run build
         
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5

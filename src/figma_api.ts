@@ -15,10 +15,10 @@ export default class FigmaApi {
 
   async getLocalVariables(fileKey: string) {
     const resp = await axios.request<GetLocalVariablesResponse>({
-      url: `${this.baseUrl}/v1/files/${fileKey}/variables/local`,
+      url: `${this.baseUrl}/v1/files/${fileKey}/variables/`,
       headers: {
         Accept: '*/*',
-        'X-Figma-Token': this.token,
+        'X-Figma-Token': process.env.PERSONAL_ACCESS_TOKEN,
       },
     })
 

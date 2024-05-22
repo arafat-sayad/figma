@@ -14,6 +14,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.SERVER_ENV_PROD }}" > .env
+          cat .env
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
